@@ -4,35 +4,44 @@ struct Dial {
     rotations_at_zero: i32,
 }
 
-impl Dial {
-    fn process(&mut self, instruction: Instruction) {
-        match instruction {
-            Instruction::Left(magnitude) => {
-                let mut rotation = self.dial - magnitude;
-                while rotation < 0 {
-                    rotation += 100
-                }
-                self.dial = rotation;
-            }
-            Instruction::Right(magnitude) => {
-                let mut rotation = self.dial + magnitude;
-                while rotation >= 100 {
-                    rotation -= 100
-                }
-                self.dial = rotation;
-            }
-        }
-
-        if self.dial == 0 {
-            self.rotations_at_zero += 1;
-        }
-    }
-}
-
 #[derive(Debug, Clone)]
 enum Instruction {
     Right(i32),
     Left(i32),
+}
+
+impl Dial {
+    pub const MODULO: i32 = 100;
+
+    fn process(&mut self, instruction: Instruction) {
+        // count moving from zero as a rotation
+        if (self.dial == 0) {
+            self.rotations_at_zero += dbg!(1);
+        }
+        match instruction {
+            Instruction::Left(magnitude) => {
+                let difference = self.dial - magnitude;
+                let result_dial = difference.rem_euclid(Self::MODULO);
+                let rotations = difference.div_euclid(Self::MODULO).abs();
+
+                self.dial = dbg!(result_dial);
+                self.rotations_at_zero += dbg!(rotations);
+            }
+            Instruction::Right(magnitude) => {
+                let sum = self.dial + magnitude;
+                let result_dial = sum.rem_euclid(Self::MODULO);
+                let rotations = sum.div_euclid(Self::MODULO).abs();
+
+                self.dial = dbg!(result_dial);
+                self.rotations_at_zero += dbg!(rotations);
+
+                // count ending at zero
+                if (rotations == 0 && self.dial == 0) {
+                    self.rotations_at_zero += dbg!(1);
+                }
+            }
+        }
+    }
 }
 
 impl Instruction {
