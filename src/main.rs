@@ -14,15 +14,21 @@ impl Dial {
     pub const MODULO: i32 = 100;
 
     fn process(&mut self, instruction: Instruction) {
-        // count moving from zero as a rotation
-        if (self.dial == 0) {
-            self.rotations_at_zero += dbg!(1);
-        }
         match instruction {
             Instruction::Left(magnitude) => {
                 let difference = self.dial - magnitude;
                 let result_dial = difference.rem_euclid(Self::MODULO);
-                let rotations = difference.div_euclid(Self::MODULO).abs();
+                let mut rotations = difference.div_euclid(Self::MODULO).abs();
+
+                // if we start at 0, we already counted it
+                if self.dial == 0 {
+                    rotations -= 1
+                }
+
+                // if we end at 0, count it
+                if result_dial == 0 {
+                    rotations += 1
+                }
 
                 self.dial = dbg!(result_dial);
                 self.rotations_at_zero += dbg!(rotations);
@@ -34,11 +40,6 @@ impl Dial {
 
                 self.dial = dbg!(result_dial);
                 self.rotations_at_zero += dbg!(rotations);
-
-                // count ending at zero
-                if (rotations == 0 && self.dial == 0) {
-                    self.rotations_at_zero += dbg!(1);
-                }
             }
         }
     }
