@@ -59,7 +59,7 @@ impl Instruction {
 }
 
 fn main() {
-    let instructions: Vec<Instruction> = std::fs::read_to_string("input01.txt")
+    let instructions: Vec<Instruction> = std::fs::read_to_string("input1.txt")
         .unwrap()
         .lines()
         .map(|line| Instruction::parse(line))
