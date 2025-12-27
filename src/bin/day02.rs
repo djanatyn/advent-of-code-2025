@@ -1,18 +1,12 @@
 fn solve_part_one(input: &str) -> i64 {
-    input
-        .trim()
-        .split(",")
-        .map(find_invalid_ids)
-        .flatten()
-        .sum()
+    input.trim().split(",").flat_map(find_invalid_ids).sum()
 }
 
 fn solve_part_two(input: &str) -> i64 {
     input
         .trim()
         .split(",")
-        .map(find_invalid_ids_part_two)
-        .flatten()
+        .flat_map(find_invalid_ids_part_two)
         .sum()
 }
 
@@ -44,7 +38,6 @@ fn find_invalid_ids_part_two(input: &str) -> Vec<i64> {
         [begin, end] => (begin.parse::<i64>().unwrap())..(end.parse::<i64>().unwrap() + 1),
         _ => panic!("invalid range"),
     };
-    &range;
     let mut invalid_ids = vec![];
     for num in range {
         if invalid_part_two(&num.to_string()) {
@@ -69,7 +62,7 @@ fn invalid(input: &str) -> bool {
 
 fn invalid_part_two(input: &str) -> bool {
     let mut size = 1; // check if first character is repeated subsequence
-    while size <= (input.as_bytes().len() / 2) {
+    while size <= (input.len() / 2) {
         // split into byte chunks
         let mut chunks = input.as_bytes().chunks(size);
         // if all elements are equal, then the sequence is invalid
@@ -80,7 +73,7 @@ fn invalid_part_two(input: &str) -> bool {
             size += 1;
         }
     }
-    return false;
+    false
 }
 
 #[cfg(test)]

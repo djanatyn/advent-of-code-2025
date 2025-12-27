@@ -62,7 +62,7 @@ fn main() {
     let instructions: Vec<Instruction> = std::fs::read_to_string("input1.txt")
         .unwrap()
         .lines()
-        .map(|line| Instruction::parse(line))
+        .map(Instruction::parse)
         .collect();
     let mut dial = Dial {
         dial: 50,
